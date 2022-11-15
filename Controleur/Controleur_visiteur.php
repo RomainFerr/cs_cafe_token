@@ -139,7 +139,7 @@ switch ($action) {
 
                             // if RGPD accepté
                             //A inclure que si RGPD acceptée !
-                            if ($salarie["aAccepteRGPD"] == 0 || $salarie["aAccepteRGPD"] == "0")
+                            if ($salarie["aAccepterRGPD"] == 0 || $salarie["aAccepterRGPD"] == "0")
                                 include "./Controleur/Controleur_RGPD.php";
                             else
                                 include "./Controleur/Controleur_Catalogue_client.php";

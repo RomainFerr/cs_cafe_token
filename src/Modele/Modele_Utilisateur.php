@@ -176,4 +176,19 @@ SET motDePasse = :parammotDePasseHache ');
         return $reponse;
     }
 
+
+    static function Utilisateur_AccepterRGPD($idUtilisateur)
+    {
+        $connexionPDO = Singleton_ConnexionPDO::getInstance();
+        $requetePreparee = $connexionPDO->prepare('
+        UPDATE utilisateur 
+        SET aAccepterRGPD = 1,
+            dateAcceptationRGPD = :dateAct
+        where idUtilisateur = :idUtilisateur');
+        $requetePreparee->bindParam('idUtilisateur', $idUtilisateur);
+        $dateAct = date("Y-m-d");
+        $requetePreparee->bindParam('dateAct', $dateAct);
+        $reponse = $requetePreparee->execute();
+    }
+
 }
