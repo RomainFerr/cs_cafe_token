@@ -26,7 +26,7 @@ SET password = :parammotDePasseHache,
 
         $requetePreparee = $connexionPDO->prepare(
             'UPDATE `salarie` 
-SET password = :parammotDePasseHache
+SET password = :parammotDePasseHache, MDPChanger = 1
 WHERE idSalarie = :paramidUtilisateur');
         $requetePreparee->bindParam('parammotDePasseHache', $parammotDePasseHache);
         $requetePreparee->bindParam('paramidUtilisateur', $idSalarie);

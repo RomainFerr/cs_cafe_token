@@ -1,5 +1,6 @@
 <?php
-
+include "vendor/autoload.php";
+use PHPMailer\PHPMailer\PHPMailer;
 use App\Modele\Modele_Entreprise;
 use App\Modele\Modele_Salarie;
 use App\Vue\Vue_Connexion_Formulaire_client;
@@ -8,7 +9,6 @@ use App\Vue\Vue_Mail_ReinitMdp;
 use App\Vue\Vue_Structure_BasDePage;
 use App\Vue\Vue_Structure_Entete;
 
-use PHPMailer\PHPMailer;
 
 //Ce contrôleur gère le formulaire de connexion pour les visiteurs
 
@@ -16,14 +16,23 @@ $Vue->setEntete(new Vue_Structure_Entete());
 
 switch ($action) {
     case "reinitmdpconfirm":
-
+        function passgen1($nbChar)
+        {
+            $chaine = "ABCDEFGHIJKLMONOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789&é\"'(-è_çà)=$^*ù!:;,~#{[|`\^@]}¤€";
+            srand(random_int(0, 999999999999999999));
+            $pass = '';
+            for ($i = 0; $i < $nbChar; $i++) {
+                $pass .= $chaine[rand() % strlen($chaine)];
+            }
+            return $pass;
+        }
         //On regarde si le mail appartient à une entreprise
         $entreprise = Modele_Entreprise::Entreprise_Select_ParMail($_REQUEST["email"]);
 
         if ($entreprise != null) {
             // le mail appartient à une entreprise
             // on va faire le mail pour cette entreprise !
-            $nvMdp = "secret";
+            $nvMdp = passgen1(12);
             Modele_Entreprise::Entreprise_Modifier_motDePasse($idEntreprise, $nvMdp);
 
             $mail = new PHPMailer;
@@ -59,13 +68,12 @@ switch ($action) {
             $salarie = Modele_Salarie::Salarie_Select_byMail($_REQUEST["email"]);
 
             if ($salarie != null) {
-                $nvMdp = "secret";
+                $nvMdp = passgen1(12);
                 Modele_Salarie::Salarie_Modifier_motDePasse($salarie["idSalarie"], $nvMdp);
 
                 $mail = new PHPMailer;
                 $mail->isSMTP();
                 $mail->Host = '127.0.0.1';
-                $mail->CharSet = "UTF-8";
                 $mail->Port = 1025; //Port non crypté
                 $mail->SMTPAuth = false; //Pas d’authentification
                 $mail->SMTPAutoTLS = false; //Pas de certificat TLS
